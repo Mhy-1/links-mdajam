@@ -14,7 +14,7 @@ export async function trackClick(linkName, linkUrl) {
     };
 
     // Fire and forget - don't block UI
-    pb.collection('link_clicks').create(data).catch(() => {
+    pb.collection('links_link_clicks').create(data).catch(() => {
       // Silently fail - analytics shouldn't break the app
     });
   } catch {
@@ -49,7 +49,7 @@ async function flushClickQueue() {
   // For now, send individually
   for (const click of clicks) {
     try {
-      await pb.collection('link_clicks').create(click);
+      await pb.collection('links_link_clicks').create(click);
     } catch {
       // Silently fail
     }
@@ -67,7 +67,7 @@ export async function trackPageView() {
       timestamp: new Date().toISOString()
     };
 
-    pb.collection('page_views').create(data).catch(() => {});
+    pb.collection('links_page_views').create(data).catch(() => {});
   } catch {
     // Silently fail
   }

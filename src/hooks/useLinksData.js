@@ -27,8 +27,8 @@ export function useLinksData() {
       try {
         // Parallel fetch both collections
         const [profileRecords, linksRecords] = await Promise.all([
-          pb.collection('profile').getFullList(),
-          pb.collection('social_links').getFullList({
+          pb.collection('links_profile').getFullList(),
+          pb.collection('links_social_links').getFullList({
             sort: 'order',
             filter: 'is_active = true'
           })

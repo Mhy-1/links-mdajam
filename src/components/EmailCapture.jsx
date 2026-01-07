@@ -19,7 +19,7 @@ function EmailCapture() {
     setStatus('loading');
 
     try {
-      await pb.collection('email_subscribers').create({
+      await pb.collection('links_email_subscribers').create({
         email: email.toLowerCase().trim(),
         subscribed_at: new Date().toISOString(),
         source: 'linktree'
