@@ -73,13 +73,61 @@
 /* Desktop - larger modal */
 @media (min-width: 768px) {
   .qr-modal {
-    max-width: 450px;
-    padding: 40px;
+    max-width: 480px;
+    padding: 48px;
+    border-radius: 20px;
+  }
+
+  .qr-title {
+    font-size: 1.5rem;
+    margin-bottom: 24px;
   }
 
   .qr-image {
-    width: 250px;
-    height: 250px;
+    width: 280px;
+    height: 280px;
+    border-radius: 16px;
+    padding: 12px;
+  }
+
+  .qr-image-container {
+    margin-bottom: 24px;
+  }
+
+  .qr-url {
+    font-size: 1rem;
+    margin-bottom: 28px;
+  }
+
+  .qr-close-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 24px;
+    top: 16px;
+    right: 16px;
+  }
+
+  .qr-actions {
+    gap: 16px;
+  }
+
+  .qr-btn {
+    padding: 14px 24px;
+    font-size: 1rem;
+    border-radius: 10px;
+  }
+}
+
+/* Large Desktop */
+@media (min-width: 1024px) {
+  .qr-modal {
+    max-width: 520px;
+    padding: 56px;
+  }
+
+  .qr-image {
+    width: 300px;
+    height: 300px;
   }
 }
 
