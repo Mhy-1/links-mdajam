@@ -79,9 +79,9 @@ export const themes = {
       '--text-primary': '#1a1a2e',
       '--text-secondary': '#666666',
       '--accent': '#1a1a2e',
-      '--card-bg': 'rgba(26, 26, 46, 0.05)',
-      '--card-border': 'rgba(26, 26, 46, 0.15)',
-      '--card-hover': 'rgba(26, 26, 46, 0.1)',
+      '--card-bg': 'rgba(26, 26, 46, 0.08)',
+      '--card-border': 'rgba(26, 26, 46, 0.2)',
+      '--card-hover': 'rgba(26, 26, 46, 0.12)',
     }
   }
 };
