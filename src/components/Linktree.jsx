@@ -1,84 +1,98 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import StarsCanvas from './StarsCanvas';
-import { doc, onSnapshot } from 'firebase/firestore';
-import { db } from '../firebase';
+import QRCode from './QRCode';
+import EmailCapture from './EmailCapture';
+import ThemeSelector from './ThemeSelector';
+import { useLinksData } from '../hooks/useLinksData';
+import { sanitizeUrl } from '../utils/urlValidator';
+import { trackClick, trackPageView } from '../utils/analytics';
+import { config } from '../config';
 import './Linktree.css';
 
 function Linktree() {
-  const [profileImage, setProfileImage] = useState('');
-  const [userName, setUserName] = useState('');
-  const [profession, setProfession] = useState('');
-  const [bio, setBio] = useState('');
-  const [morphTexts, setMorphTexts] = useState([]);
-  const [socialLinks, setSocialLinks] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { profile, links, loading, error } = useLinksData();
 
+  // Track page view on mount
   useEffect(() => {
-    const userDetailsRef = doc(db, 'profile', 'userDetails');
-    const unsubscribe = onSnapshot(userDetailsRef, (doc) => {
-      if (doc.exists()) {
-        const data = doc.data();
-        setProfileImage(data.profileImage || '');
-        setUserName(data.name || '');
-        setProfession(data.profession || '');
-        setBio(data.bio || '');
-        setMorphTexts(data.morphTexts ? data.morphTexts.split(' | ') : []);
-        setSocialLinks(data.socialLinks || []);
-      }
-      setLoading(false);
-    });
-
-    return () => unsubscribe();
+    trackPageView();
   }, []);
 
-  if (loading) {
+  // Handle link click with analytics
+  const handleLinkClick = (name, url) => {
+    trackClick(name, url);
+  };
+
+  // Show spinner only on fresh load with no cache
+  if (loading && !profile) {
     return (
-      <div className="user-profile loading-state">
-        <div className="animated-background">
+      <main className="user-profile loading-state" role="status" aria-live="polite">
+        <div className="animated-background" aria-hidden="true">
           <StarsCanvas starCount={200} layers={3} />
         </div>
-        <div className="loading-spinner"></div>
-      </div>
+        <div className="loading-spinner" aria-label="Loading content"></div>
+      </main>
+    );
+  }
+
+  // Error with no cached data
+  if (error && !profile) {
+    return (
+      <main className="user-profile" role="alert">
+        <div className="animated-background" aria-hidden="true">
+          <StarsCanvas starCount={200} layers={3} />
+        </div>
+        <p style={{ color: '#fff', textAlign: 'center', padding: '2rem' }}>
+          Unable to load. Please refresh the page.
+        </p>
+      </main>
     );
   }
 
   return (
-    <div className="user-profile">
-      <div className="animated-background">
+    <main className="user-profile">
+      <div className="animated-background" aria-hidden="true">
         <StarsCanvas starCount={200} layers={3} />
       </div>
 
-      <div id="profilePicture">
-        {profileImage && (
-          <img
-            src={profileImage}
-            alt={`${userName || 'Profile'} photo`}
-            loading="eager"
-            decoding="async"
-          />
+      {/* Profile Section */}
+      <section className="profile-section" aria-label="Profile Information">
+        <div id="profilePicture">
+          {profile?.image && (
+            <img
+              src={profile.image}
+              alt={`${profile.name || 'User'} profile photo`}
+              loading="lazy"
+              decoding="async"
+            />
+          )}
+        </div>
+
+        <header id="userName">
+          <h1 className="pname">{profile?.name}</h1>
+          <p className="ppro">{profile?.profession}</p>
+          <p className="bio">{profile?.bio}</p>
+        </header>
+
+        {profile?.morphTexts?.length > 0 && (
+          <div className="morph-text" aria-label="Specialties">
+            {profile.morphTexts.join(' | ')}
+          </div>
         )}
-      </div>
+      </section>
 
-      <div id="userName">
-        <p className="pname">{userName}</p>
-        <p className="ppro">{profession}</p>
-        <p className="bio">{bio}</p>
-      </div>
-
-      <div className="morph-text">
-        {morphTexts.join(' | ')}
-      </div>
-
-      <div className="social-links-container">
+      {/* Links Section */}
+      <nav className="social-links-container" aria-label="Social Links">
         {/* Portfolio Link */}
         <div className="social-link website-link" style={{ animationDelay: '0.4s' }}>
           <a
-            href="https://msharydajam.dev"
+            href={config.portfolioUrl}
             className="social-link-anchor"
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="Visit my portfolio website"
+            onClick={() => handleLinkClick('Portfolio', config.portfolioUrl)}
           >
-            <div className="social-icon">
+            <div className="social-icon" aria-hidden="true">
               <svg
                 width="40"
                 height="40"
@@ -93,31 +107,46 @@ function Linktree() {
                 />
               </svg>
             </div>
-            <div className="social-text">View Portfolio</div>
+            <span className="social-text">View Portfolio</span>
           </a>
         </div>
 
-        {socialLinks.map((link, index) => (
+        {links.map((link, index) => (
           <div
             className="social-link"
             key={link.url || link.name || index}
             style={{ animationDelay: `${(index + 1) * 0.2 + 0.4}s` }}
           >
             <a
-              href={link.url}
+              href={sanitizeUrl(link.url)}
               target="_blank"
               rel="noopener noreferrer"
               className="social-link-anchor"
+              aria-label={`Visit ${link.name}`}
+              onClick={() => handleLinkClick(link.name, link.url)}
             >
-              <div className="social-icon">
-                <img src={link.iconUrl} alt={link.name} loading="lazy" decoding="async" />
+              <div className="social-icon" aria-hidden="true">
+                {link.iconUrl ? (
+                  <img src={link.iconUrl} alt="" loading="lazy" decoding="async" />
+                ) : (
+                  <span className="icon-placeholder">🔗</span>
+                )}
               </div>
-              <div className="social-text">{link.name}</div>
+              <span className="social-text">{link.name}</span>
             </a>
           </div>
         ))}
-      </div>
-    </div>
+      </nav>
+
+      {/* Email Capture Form */}
+      <EmailCapture />
+
+      {/* Share/QR Code Button */}
+      <QRCode />
+
+      {/* Theme Selector */}
+      <ThemeSelector />
+    </main>
   );
 }
 

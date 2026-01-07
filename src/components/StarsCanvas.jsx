@@ -1,8 +1,11 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useMemo } from 'react';
 
 /**
  * StarsCanvas Component
  * Optimized starfield animation using HTML5 Canvas
+ * - Pauses when tab is hidden (saves CPU)
+ * - Debounced resize handler
+ * - Memoized star initialization
  */
 function StarsCanvas({
   starCount = 200,
@@ -11,7 +14,13 @@ function StarsCanvas({
 }) {
   const canvasRef = useRef(null);
   const animationFrameRef = useRef(null);
-  const starsRef = useRef([]);
+  const isVisibleRef = useRef(true);
+
+  // Memoize layer configuration to prevent reinit
+  const layerConfig = useMemo(() => ({
+    speeds: [0.5, 0.3, 0.2],
+    sizes: [1, 2, 3]
+  }), []);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -27,19 +36,25 @@ function StarsCanvas({
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    let stars = [];
+
     const resizeCanvas = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
+      initStars(); // Reinitialize stars on resize
     };
 
-    resizeCanvas();
-    window.addEventListener('resize', resizeCanvas);
+    // Debounced resize handler
+    let resizeTimeout;
+    const debouncedResize = () => {
+      clearTimeout(resizeTimeout);
+      resizeTimeout = setTimeout(resizeCanvas, 100);
+    };
 
     // Initialize stars for each layer
     const initStars = () => {
-      starsRef.current = [];
-      const speeds = [0.5, 0.3, 0.2];
-      const sizes = [1, 2, 3];
+      stars = [];
+      const { speeds, sizes } = layerConfig;
 
       for (let layer = 0; layer < layers; layer++) {
         const layerStars = [];
@@ -52,17 +67,29 @@ function StarsCanvas({
             opacity: Math.random() * 0.5 + 0.5,
           });
         }
-        starsRef.current.push(layerStars);
+        stars.push(layerStars);
       }
     };
 
-    initStars();
+    // Handle visibility change - pause animation when tab is hidden
+    const handleVisibilityChange = () => {
+      isVisibleRef.current = !document.hidden;
+      if (isVisibleRef.current && !animationFrameRef.current) {
+        animate();
+      }
+    };
 
     // Animation loop
     const animate = () => {
+      // Don't animate if tab is hidden
+      if (!isVisibleRef.current) {
+        animationFrameRef.current = null;
+        return;
+      }
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      starsRef.current.forEach((layerStars) => {
+      stars.forEach((layerStars) => {
         layerStars.forEach((star) => {
           star.y += star.speed;
 
@@ -83,15 +110,22 @@ function StarsCanvas({
       animationFrameRef.current = requestAnimationFrame(animate);
     };
 
+    // Initial setup
+    resizeCanvas();
+    window.addEventListener('resize', debouncedResize);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
     animate();
 
     return () => {
-      window.removeEventListener('resize', resizeCanvas);
+      clearTimeout(resizeTimeout);
+      window.removeEventListener('resize', debouncedResize);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
       if (animationFrameRef.current) {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [starCount, layers, starColor]);
+  }, [starCount, layers, starColor, layerConfig]);
 
   return (
     <canvas

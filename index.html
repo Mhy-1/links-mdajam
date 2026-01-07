@@ -2,8 +2,12 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+
+    <!-- Favicon & App Icons -->
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <link rel="apple-touch-icon" href="/icons/icon-192x192.png" />
+    <link rel="manifest" href="/manifest.json" />
 
     <!-- Primary Meta Tags -->
     <title>Mshary Dajam | Links</title>
@@ -11,6 +15,7 @@
     <meta name="description" content="Connect with Mshary Dajam - Software Engineer & Full Stack Developer. Find all my social links, portfolio, and contact information in one place." />
     <meta name="author" content="Mshary Dajam" />
     <meta name="keywords" content="Mshary Dajam, Software Engineer, Full Stack Developer, Links, Portfolio, Social Media" />
+    <meta name="robots" content="index, follow" />
 
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
@@ -29,10 +34,12 @@
     <meta name="twitter:site" content="@msaboraldajam" />
     <meta name="twitter:creator" content="@msaboraldajam" />
 
-    <!-- Theme Color -->
+    <!-- Theme Color & PWA -->
     <meta name="theme-color" content="#1a1a2e" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="MDajam Links" />
+    <meta name="msapplication-TileColor" content="#1a1a2e" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -41,9 +48,36 @@
 
     <!-- Canonical -->
     <link rel="canonical" href="https://links.mdajam.com/" />
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Mshary Dajam",
+      "jobTitle": "Software Engineer",
+      "url": "https://links.mdajam.com",
+      "sameAs": [
+        "https://msharydajam.dev",
+        "https://github.com/msharydajam",
+        "https://twitter.com/msaboraldajam"
+      ]
+    }
+    </script>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+
+    <!-- Service Worker Registration -->
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js')
+            .then(reg => console.log('SW registered'))
+            .catch(err => console.log('SW registration failed:', err));
+        });
+      }
+    </script>
   </body>
 </html>

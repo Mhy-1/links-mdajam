@@ -42,16 +42,27 @@
   --transition-normal: 0.2s ease;
   --transition-slow: 0.3s ease;
 
-  /* Linktree specific */
-  --linktree-bg-primary: var(--color-neutral-800);
-  --linktree-bg-secondary: var(--color-neutral-900);
-  --linktree-text-primary: var(--color-neutral-0);
-  --linktree-text-secondary: var(--color-neutral-300);
-  --linktree-card-bg: rgba(255, 255, 255, 0.1);
-  --linktree-card-border: rgba(255, 255, 255, 0.1);
+  /* Linktree specific - Theme variables with fallbacks */
+  /* These are overridden by ThemeSelector via applyTheme() */
+  --bg-primary: #1a1a2e;
+  --bg-secondary: #16213e;
+  --text-primary: #ffffff;
+  --text-secondary: #a0a0a0;
+  --accent: #ffffff;
+  --card-bg: rgba(255, 255, 255, 0.1);
+  --card-border: rgba(255, 255, 255, 0.2);
+  --card-hover: rgba(255, 255, 255, 0.15);
+
+  /* Mapped variables for backwards compatibility */
+  --linktree-bg-primary: var(--bg-primary);
+  --linktree-bg-secondary: var(--bg-secondary);
+  --linktree-text-primary: var(--text-primary);
+  --linktree-text-secondary: var(--text-secondary);
+  --linktree-card-bg: var(--card-bg);
+  --linktree-card-border: var(--card-border);
   --linktree-card-shadow: var(--shadow-md);
   --linktree-card-hover-shadow: var(--shadow-hover);
-  --linktree-star-color: #ffffff;
+  --linktree-star-color: var(--text-primary);
 }
 
 /* Reset */
@@ -243,12 +254,12 @@ html, body, #root {
 .social-link:focus-visible {
   transform: scale(1.05);
   box-shadow: var(--linktree-card-hover-shadow);
-  background: rgba(255, 255, 255, 0.15);
-  border-color: rgba(255, 255, 255, 0.2);
+  background: var(--card-hover);
+  border-color: var(--card-border);
 }
 
 .social-link:focus-visible {
-  outline: 2px solid var(--color-primary-400);
+  outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
 
