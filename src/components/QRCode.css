@@ -34,7 +34,13 @@
 /* Modal Overlay */
 .qr-modal-overlay {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100vw !important;
+  max-width: 100vw !important;
+  height: 100vh;
   background: rgba(0, 0, 0, 0.8);
   backdrop-filter: blur(4px);
   display: flex;
@@ -42,6 +48,7 @@
   justify-content: center;
   z-index: 1000;
   padding: 20px;
+  box-sizing: border-box;
   animation: fadeIn 0.2s ease;
 }
 
@@ -54,12 +61,26 @@
 .qr-modal {
   background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
   border-radius: 16px;
-  padding: 24px;
-  max-width: 320px;
-  width: 100%;
+  padding: 32px;
+  max-width: 400px;
+  width: 90%;
   position: relative;
   border: 1px solid rgba(255, 255, 255, 0.1);
   animation: slideUp 0.3s ease;
+  margin: auto;
+}
+
+/* Desktop - larger modal */
+@media (min-width: 768px) {
+  .qr-modal {
+    max-width: 450px;
+    padding: 40px;
+  }
+
+  .qr-image {
+    width: 250px;
+    height: 250px;
+  }
 }
 
 @keyframes slideUp {
