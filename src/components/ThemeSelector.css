@@ -4,10 +4,15 @@
   bottom: 20px;
   left: 20px;
   z-index: 100;
+  width: auto !important;
+  max-width: none !important;
+  padding: 0 !important;
 }
 
 .theme-toggle-btn {
-  width: 48px;
+  width: 48px !important;
+  min-width: 48px;
+  max-width: 48px;
   height: 48px;
   border-radius: 50%;
   background: var(--card-bg, rgba(255, 255, 255, 0.1));
@@ -19,6 +24,13 @@
   align-items: center;
   justify-content: center;
   transition: all 0.3s ease;
+  padding: 0;
+}
+
+.theme-toggle-btn svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
 }
 
 .theme-toggle-btn:hover {

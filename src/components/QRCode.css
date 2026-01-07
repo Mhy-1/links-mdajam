@@ -21,6 +21,12 @@
   padding: 0;
 }
 
+.qr-toggle-btn svg {
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+}
+
 .qr-toggle-btn:hover {
   background: var(--card-hover);
   transform: scale(1.1);
