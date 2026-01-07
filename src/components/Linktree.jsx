@@ -136,10 +136,10 @@ function Linktree() {
             </a>
           </div>
         ))}
-      </nav>
 
-      {/* Email Capture Form */}
-      <EmailCapture />
+        {/* Email Capture Form */}
+        <EmailCapture />
+      </nav>
 
       {/* Share/QR Code Button */}
       <QRCode />
