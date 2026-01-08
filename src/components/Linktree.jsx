@@ -6,7 +6,6 @@ import ThemeSelector from './ThemeSelector';
 import { useLinksData } from '../hooks/useLinksData';
 import { sanitizeUrl } from '../utils/urlValidator';
 import { trackClick, trackPageView } from '../utils/analytics';
-import { config } from '../config';
 import './Linktree.css';
 
 function Linktree() {
@@ -82,35 +81,6 @@ function Linktree() {
 
       {/* Links Section */}
       <nav className="social-links-container" aria-label="Social Links">
-        {/* Portfolio Link */}
-        <div className="social-link website-link" style={{ animationDelay: '0.4s' }}>
-          <a
-            href={config.portfolioUrl}
-            className="social-link-anchor"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Visit my portfolio website"
-            onClick={() => handleLinkClick('Portfolio', config.portfolioUrl)}
-          >
-            <div className="social-icon" aria-hidden="true">
-              <svg
-                width="40"
-                height="40"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                style={{ borderRadius: '50%', backgroundColor: 'rgba(255, 255, 255, 0.1)', padding: '8px' }}
-              >
-                <path
-                  d="M20 6h-4V4c0-1.11-.89-2-2-2h-4c-1.11 0-2 .89-2 2v2H4c-1.11 0-1.99.89-1.99 2L2 19c0 1.11.89 2 2 2h16c1.11 0 2-.89 2-2V8c0-1.11-.89-2-2-2zm-6 0h-4V4h4v2z"
-                  fill="currentColor"
-                />
-              </svg>
-            </div>
-            <span className="social-text">View Portfolio</span>
-          </a>
-        </div>
-
         {links.map((link, index) => (
           <div
             className="social-link"
